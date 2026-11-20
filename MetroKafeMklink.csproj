@@ -9,7 +9,7 @@
     <AssemblyName>MetroKafeMklink</AssemblyName>
     <RootNamespace>MetroKafeMklink</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <Product>MetroKafe Mklink</Product>
     <Company>MetroKafe</Company>
     <Copyright>MetroKafe</Copyright>

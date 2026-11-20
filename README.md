@@ -26,6 +26,19 @@ Her kayıt için diskteki duruma bakar:
 
 Uygulamadan önce yapılacaklar listelenir ve onay istenir. "Bağlantıyı kaldır" yalnızca junction'ı siler; veri merkezde kalır.
 
+## BAT'a aktar
+
+Mklink sekmesindeki **BAT'a aktar** düğmesi seçili kayıtları (seçim yoksa görünen tüm etkin kayıtları) tek bir
+`.bat` dosyasına yazar. Dosya yönetici olarak çalıştırıldığında her kayıt için:
+
+1. Hedef klasör yoksa kayıt atlanır ve hata olarak yazılır
+2. Bağlantı yerinde mevcut bir mklink varsa `rmdir` ile kaldırılır
+3. Gerçek klasör varsa adına `.eski` eklenir (`.eski` zaten varsa `.eski_tarih`) ve bu loglanır
+4. `mklink /J` ile bağlanır
+
+Bütün adımlar bat'ın yanındaki `mklink_log.txt` dosyasına yazılır. `{MERKEZ}` bat'ın başında `set "MERKEZ=..."`
+satırına dönüşür; `%APPDATA%` gibi değişkenler bat'ı çalıştıran kullanıcıya göre çözülür.
+
 ## Yollar ve değişkenler
 
 Merkez klasör varsayılan olarak boştur ve boşken **exe'nin bulunduğu klasör** (`.\`) kullanılır.

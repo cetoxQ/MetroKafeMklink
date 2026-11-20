@@ -186,7 +186,14 @@
                 <Border Grid.Row="2" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,1,0,0" Margin="4,6,4,0" Padding="6,12,6,6">
                     <DockPanel>
                         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                            <Button Style="{StaticResource GhostButton}" Click="OpenFolder_Click" ToolTip="Hedef klasörü Gezgin'de aç">
+                            <Button Style="{StaticResource GhostButton}" Click="ExportBat_Click"
+                                    ToolTip="Seçili kayıtları tek bir .bat dosyasına yaz: varsa mklink'i kaldırır, gerçek klasörü .eski yapar, sonra mklink oluşturur">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE756;" Style="{StaticResource Icon}"/>
+                                    <TextBlock Text="BAT'a aktar"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource GhostButton}" Click="OpenFolder_Click" ToolTip="Hedef klasörü Gezgin'de aç" Margin="4,0,0,0">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="&#xE838;" Style="{StaticResource Icon}"/>
                                     <TextBlock Text="Klasörü aç"/>

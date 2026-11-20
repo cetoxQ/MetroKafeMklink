@@ -164,6 +164,46 @@ public partial class LinksView : UserControl, IPage
 
     private void Refresh_Click(object sender, RoutedEventArgs e) => _ = RefreshAsync();
 
+    private async void ExportBat_Click(object sender, RoutedEventArgs e)
+    {
+        var items = Selected.Count > 0 ? Selected : Visible.Where(i => i.Enabled).ToList();
+        if (items.Count == 0) { await MainWindow.Instance.InfoAsync("BAT'a aktar", "Aktarılacak kayıt yok. Listeden kayıt seçin."); return; }
+
+        var dlg = new Microsoft.Win32.SaveFileDialog
+        {
+            Title = $"{items.Count} kaydı BAT olarak kaydet",
+            Filter = "Toplu iş dosyası (*.bat)|*.bat",
+            FileName = $"mklink_{(_group == AllGroups ? "tumu" : _group.ToLowerInvariant())}_{DateTime.Now:yyyyMMdd}.bat",
+            InitialDirectory = AppState.ExeFolder,
+        };
+        if (dlg.ShowDialog() != true) return;
+
+        try
+        {
+            BatExporter.Export(items, dlg.FileName);
+            AppState.AddLog($"BAT oluşturuldu: {dlg.FileName} ({items.Count} kayıt)", LogKind.Success);
+        }
+        catch (Exception ex)
+        {
+            AppState.AddLog("BAT yazılamadı: " + ex.Message, LogKind.Error);
+            await MainWindow.Instance.InfoAsync("BAT'a aktar", "Dosya yazılamadı: " + ex.Message);
+            return;
+        }
+
+        var msg = $"{items.Count} kayıt yazıldı:\n{dlg.FileName}\n\n" +
+                  "Yönetici olarak çalıştırıldığında her kayıt için:\n" +
+                  "1. Varsa mevcut mklink rmdir ile kaldırılır\n" +
+                  "2. Gerçek klasör varsa adına .eski eklenir ve loglanır\n" +
+                  "3. mklink /J ile bağlanır\n\n" +
+                  "İşlemler bat'ın yanındaki mklink_log.txt dosyasına yazılır.";
+        if (await MainWindow.Instance.ShowDialogAsync("BAT oluşturuldu", new TextBlock
+            {
+                Text = msg, TextWrapping = TextWrapping.Wrap, LineHeight = 20,
+                Foreground = (System.Windows.Media.Brush)FindResource("SubTextBrush"),
+            }, "Klasörü aç", "Kapat"))
+            ProcessRunner.OpenInExplorer(dlg.FileName);
+    }
+
     // ---- Diske uygulanan islemler ----
 
     private async void Link_Click(object sender, RoutedEventArgs e)
