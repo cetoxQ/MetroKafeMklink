@@ -1,0 +1,70 @@
+# MetroKafe Mklink
+
+İnternet kafe makinelerinde oyun ve launcher klasörlerini tek bir merkez klasörde toplayan, eski yerlerine
+junction (`mklink /J`) koyan ve gerekli registry anahtarlarını taşıyan Windows uygulaması.
+
+## Sekmeler
+
+| Sekme | Ne yapar |
+|---|---|
+| **Mklink** | Bağlantıların listesi ve durumları (Bağlı / Bağlı değil / Gerçek klasör / Yanlış hedef / Hedef yok). Ekle, düzenle, sil, tek tıkla bağla, bağlantıyı kaldır. |
+| **Registry** | Anahtarları merkezdeki `Registry` klasörüne `.reg` olarak dışa aktar, client'ta içe aktar, Regedit'te aç. |
+| **Ayarlar** | Merkez klasör, işlem öncesi kapatılacak programlar, GitHub güncelleme kaynağı ve token. |
+| **Güncelleme** | GitHub Releases'tan yeni sürümü denetler, indirir, kendini değiştirip yeniden başlar. |
+
+## "Bağla" ne yapar?
+
+Her kayıt için diskteki duruma bakar:
+
+| Durum | Yapılan |
+|---|---|
+| Bağlantı yok, merkezde veri var | Junction oluşturulur |
+| Gerçek klasör var, merkezde yok | Klasör merkeze **taşınır**, yerine junction konur |
+| Gerçek klasör var, merkezde de var | Buradaki klasör `.yedek_tarih` adıyla kenara alınır, junction konur |
+| Başka yeri gösteren junction | Silinip doğrusu oluşturulur |
+| Hedef yok | Dokunulmaz, hata olarak gösterilir |
+
+Uygulamadan önce yapılacaklar listelenir ve onay istenir. "Bağlantıyı kaldır" yalnızca junction'ı siler; veri merkezde kalır.
+
+## Yollar ve değişkenler
+
+Yollarda `{MERKEZ}` (Ayarlar'daki merkez klasör) ve `%APPDATA%`, `%LOCALAPPDATA%`, `%PROGRAMDATA%`, `%USERPROFILE%`
+kullanılabilir. Böylece aynı kayıt her bilgisayarda ve her Windows kullanıcısında doğru yeri gösterir.
+Junction yalnızca yerel bir diski gösterebilir; ağ yolu (`\\sunucu\...`) kullanılamaz.
+
+## Komut satırı (client açılışı için)
+
+```
+MetroKafeMklink.exe /bagla [/tasi] [/kayitsiz]
+```
+
+- `/bagla`: etkin tüm bağlantıları kurar ve merkezdeki `.reg` dosyalarını içe aktarır (pencere açmaz)
+- `/tasi`: gerçek klasörü merkeze taşımaya izin verir (varsayılan olarak taşımaz, atlar)
+- `/kayitsiz`: registry adımını atlar
+
+Sonuç `MetroKafeMklink.log` dosyasına yazılır. Çıkış kodu `0` sorunsuz, `1` hata var demektir.
+
+## Dosyalar
+
+- `MetroKafeMklink.json`: exe'nin yanında; bütün kayıtlar ve ayarlar burada. Exe ile birlikte client'lara kopyalanabilir.
+- `MetroKafeMklink.log`: işlem kaydı.
+
+## Güncelleme
+
+Depo gizli olduğu için Ayarlar'a bir GitHub token girilmelidir (yalnızca bu depoya, *Contents: Read-only* izinli
+fine-grained token önerilir). Token bilgisayara özel (DPAPI) şifrelenerek saklanır.
+
+Yeni sürüm yayınlamak:
+
+```
+dotnet publish -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o publish
+gh release create v1.0.1 publish/MetroKafeMklink.exe --title "v1.0.1" --notes "..."
+```
+
+`MetroKafeMklink.csproj` içindeki `<Version>` etiketle aynı olmalıdır.
+
+## Notlar
+
+- Uygulama yönetici olarak çalışır (junction ve HKLM işlemleri için gerekli).
+- Riot Vanguard (`C:\Program Files\Riot Vanguard`) junction ile taşınmamalı; her client'a normal kurulmalıdır.
+- Gereksinim: Windows 10/11 x64. Yayınlanan exe .NET çalışma zamanını içinde taşır, ayrıca kurulum gerekmez.

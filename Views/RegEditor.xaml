@@ -1,0 +1,36 @@
+<UserControl x:Class="MetroKafeMklink.Views.RegEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="14"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <TextBlock Text="Ad" Style="{StaticResource FieldLabel}"/>
+                <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Tag="örn. Riot Client protokolü"/>
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+                <TextBlock Text="Grup" Style="{StaticResource FieldLabel}"/>
+                <TextBox Text="{Binding Group, UpdateSourceTrigger=PropertyChanged}" Tag="örn. Riot"/>
+            </StackPanel>
+        </Grid>
+
+        <TextBlock Text="Anahtar" Style="{StaticResource FieldLabel}" Margin="0,16,0,6"/>
+        <TextBox x:Name="KeyBox" Text="{Binding Key, UpdateSourceTrigger=PropertyChanged}" Tag="örn. HKLM\SOFTWARE\Classes\riotclient"
+                 FontFamily="Consolas" TextChanged="Key_TextChanged"/>
+        <TextBlock x:Name="KeyState" Style="{StaticResource Hint}" Margin="2,5,0,0"/>
+
+        <TextBlock Text=".reg dosya adı (merkezdeki Registry klasöründe)" Style="{StaticResource FieldLabel}" Margin="0,14,0,6"/>
+        <TextBox Text="{Binding FileName, UpdateSourceTrigger=PropertyChanged}" Tag="örn. riotclient.reg (boş bırakılırsa addan üretilir)"/>
+
+        <CheckBox Style="{StaticResource Switch}" IsChecked="{Binding Enabled}" Content="Etkin (toplu işlemlere dahil)" Margin="0,18,0,0"/>
+
+        <TextBlock Style="{StaticResource Hint}" Margin="0,16,0,0"
+                   Text="Kısaltmalar: HKLM, HKCU, HKCR, HKU. Regedit'teki adres çubuğundan kopyalanan 'Bilgisayar\HKEY_…' yolu da olur; baştaki kısım otomatik temizlenir."/>
+
+        <TextBlock x:Name="ErrorText" Foreground="{StaticResource DangerBrush}" Margin="0,12,0,0" TextWrapping="Wrap" Visibility="Collapsed"/>
+    </StackPanel>
+</UserControl>

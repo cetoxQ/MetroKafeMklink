@@ -1,0 +1,71 @@
+<UserControl x:Class="MetroKafeMklink.Views.UpdateView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,20">
+            <TextBlock Text="Güncelleme" Style="{StaticResource PageTitle}"/>
+            <TextBlock Text="Yeni sürümleri GitHub'dan denetle, indir ve tek tıkla kur" Style="{StaticResource PageSubtitle}"/>
+        </StackPanel>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="320"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Surum karti -->
+            <Border Style="{StaticResource Card}" VerticalAlignment="Top" Padding="24">
+                <StackPanel>
+                    <TextBlock Text="Kurulu sürüm" Foreground="{StaticResource SubTextBrush}" FontSize="12"/>
+                    <TextBlock x:Name="CurrentText" FontSize="34" FontWeight="SemiBold" Margin="0,4,0,0"/>
+
+                    <Border Height="1" Background="{StaticResource LineBrush}" Margin="0,18"/>
+
+                    <TextBlock Text="Son yayın" Foreground="{StaticResource SubTextBrush}" FontSize="12"/>
+                    <TextBlock x:Name="LatestText" Text="—" FontSize="20" FontWeight="SemiBold" Margin="0,4,0,0"/>
+                    <TextBlock x:Name="LatestDate" Style="{StaticResource Hint}" Margin="0,2,0,0"/>
+
+                    <Border x:Name="StatusBox" CornerRadius="8" Padding="12,10" Margin="0,18,0,0" Background="#108C95A3">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Name="StatusIcon" Text="&#xE946;" Style="{StaticResource Icon}" Foreground="{StaticResource SubTextBrush}"/>
+                            <TextBlock x:Name="StatusText" Text="Henüz denetlenmedi" TextWrapping="Wrap" MaxWidth="230"
+                                       Foreground="{StaticResource SubTextBrush}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Button x:Name="CheckButton" Margin="0,18,0,0" HorizontalAlignment="Stretch" Click="Check_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Name="CheckIcon" Text="&#xE72C;" Style="{StaticResource Icon}"/>
+                            <TextBlock Text="Güncellemeleri denetle"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="InstallButton" Style="{StaticResource AccentButton}" Margin="0,10,0,0" HorizontalAlignment="Stretch"
+                            Click="Install_Click" IsEnabled="False">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE896;" Style="{StaticResource Icon}"/>
+                            <TextBlock x:Name="InstallText" Text="İndir ve kur"/>
+                        </StackPanel>
+                    </Button>
+
+                    <StackPanel x:Name="ProgressPanel" Margin="0,16,0,0" Visibility="Collapsed">
+                        <ProgressBar x:Name="Progress" Maximum="1"/>
+                        <TextBlock x:Name="ProgressText" Style="{StaticResource Hint}" Margin="0,6,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Surum notlari -->
+            <Border Grid.Column="2" Style="{StaticResource Card}" Padding="24">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="Sürüm notları" Style="{StaticResource SectionTitle}"/>
+                    <TextBlock x:Name="NotesTitle" DockPanel.Dock="Top" Foreground="{StaticResource SubTextBrush}" Margin="0,4,0,14"/>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <TextBlock x:Name="NotesText" TextWrapping="Wrap" Foreground="{StaticResource TextBrush}" LineHeight="21"
+                                   Text="Denetlediğinizde son sürümün notları burada görünür."/>
+                    </ScrollViewer>
+                </DockPanel>
+            </Border>
+        </Grid>
+    </DockPanel>
+</UserControl>

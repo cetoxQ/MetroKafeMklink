@@ -1,0 +1,131 @@
+<UserControl x:Class="MetroKafeMklink.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Top" Margin="0,0,0,20">
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock x:Name="SavedText" Text="✓ Kaydedildi" Foreground="{StaticResource SuccessBrush}" VerticalAlignment="Center"
+                           Margin="0,0,14,0" Opacity="0"/>
+                <Button Style="{StaticResource AccentButton}" Click="Save_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE74E;" Style="{StaticResource Icon}"/>
+                        <TextBlock Text="Kaydet"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+            <StackPanel>
+                <TextBlock Text="Ayarlar" Style="{StaticResource PageTitle}"/>
+                <TextBlock Text="Merkez klasör, işlem öncesi kapatılacak programlar ve güncelleme ayarları" Style="{StaticResource PageSubtitle}"/>
+            </StackPanel>
+        </DockPanel>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="0,0,6,8">
+
+                <!-- Merkez -->
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8B7;" Style="{StaticResource Icon}" Foreground="{StaticResource AccentBrush}" FontSize="15" Margin="0,0,10,0"/>
+                            <TextBlock Text="Merkez klasör" Style="{StaticResource SectionTitle}"/>
+                        </StackPanel>
+                        <TextBlock Style="{StaticResource Hint}" Margin="0,6,0,14"
+                                   Text="Bütün verilerin toplandığı yer. Kayıtlardaki {MERKEZ} bu yolu gösterir. Junction yalnızca yerel bir diski gösterebilir; ağ yolu (\\sunucu\…) kullanılamaz."/>
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Margin="8,0,0,0" Click="OpenCenter_Click" ToolTip="Gezgin'de aç">
+                                <TextBlock Text="&#xE8A7;" FontFamily="{StaticResource IconFont}"/>
+                            </Button>
+                            <Button DockPanel.Dock="Right" Margin="8,0,0,0" Click="BrowseCenter_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE838;" Style="{StaticResource Icon}"/>
+                                    <TextBlock Text="Seç"/>
+                                </StackPanel>
+                            </Button>
+                            <TextBox x:Name="CenterBox" Tag="örn. D:\MetroKafeMerkez" TextChanged="CenterBox_TextChanged"/>
+                        </DockPanel>
+                        <TextBlock x:Name="CenterInfo" Style="{StaticResource Hint}" Margin="2,6,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Kapatilacak programlar -->
+                <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE7E8;" Style="{StaticResource Icon}" Foreground="{StaticResource WarningBrush}" FontSize="15" Margin="0,0,10,0"/>
+                            <TextBlock Text="İşlemden önce kapatılacak programlar" Style="{StaticResource SectionTitle}"/>
+                        </StackPanel>
+                        <TextBlock Style="{StaticResource Hint}" Margin="0,6,0,14"
+                                   Text="Bağlama ve taşıma sırasında klasörleri kullanan programlar kapatılır. Virgülle ayırın; .exe yazmak gerekmez. Riot Vanguard (vgc, vgtray) kapatılmamalı."/>
+                        <TextBox x:Name="ProcessesBox" TextWrapping="Wrap" AcceptsReturn="False" MinHeight="64" VerticalContentAlignment="Top"
+                                 Tag="RiotClientServices, EpicGamesLauncher"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- GitHub -->
+                <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE895;" Style="{StaticResource Icon}" Foreground="{StaticResource AccentBrush}" FontSize="15" Margin="0,0,10,0"/>
+                            <TextBlock Text="Güncelleme kaynağı (GitHub)" Style="{StaticResource SectionTitle}"/>
+                        </StackPanel>
+                        <TextBlock Style="{StaticResource Hint}" Margin="0,6,0,14"
+                                   Text="Depo gizli olduğu için güncellemeleri görebilmek adına bir GitHub token gerekir. Yalnızca 'Contents: Read-only' izinli, bu depoya özel bir fine-grained token önerilir. Token bu bilgisayara özel şifrelenerek saklanır."/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="14"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Depo (sahip/ad)" Style="{StaticResource FieldLabel}"/>
+                                <TextBox x:Name="RepoBox" Tag="cetoxQ/MetroKafeMklink" FontFamily="Consolas"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Token" Style="{StaticResource FieldLabel}"/>
+                                <DockPanel>
+                                    <Button x:Name="ClearTokenButton" DockPanel.Dock="Right" Margin="8,0,0,0" Style="{StaticResource GhostButton}"
+                                            Click="ClearToken_Click" ToolTip="Kayıtlı token'ı sil">
+                                        <TextBlock Text="&#xE74D;" FontFamily="{StaticResource IconFont}"/>
+                                    </Button>
+                                    <PasswordBox x:Name="TokenBox"/>
+                                </DockPanel>
+                                <TextBlock x:Name="TokenInfo" Style="{StaticResource Hint}" Margin="2,6,0,0"/>
+                            </StackPanel>
+                        </Grid>
+                        <CheckBox x:Name="CheckUpdatesBox" Style="{StaticResource Switch}" Content="Açılışta güncellemeleri kontrol et" Margin="0,18,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Bilgi -->
+                <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE756;" Style="{StaticResource Icon}" Foreground="{StaticResource InfoBrush}" FontSize="15" Margin="0,0,10,0"/>
+                            <TextBlock Text="Komut satırı ve dosyalar" Style="{StaticResource SectionTitle}"/>
+                        </StackPanel>
+                        <TextBlock Style="{StaticResource Hint}" Margin="0,6,0,12"
+                                   Text="Client açılışında pencere göstermeden bütün etkin bağlantıları kurmak ve .reg dosyalarını uygulamak için:"/>
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Margin="8,0,0,0" Click="CopyCommand_Click" ToolTip="Kopyala">
+                                <TextBlock Text="&#xE8C8;" FontFamily="{StaticResource IconFont}"/>
+                            </Button>
+                            <TextBox x:Name="CommandBox" IsReadOnly="True" FontFamily="Consolas"/>
+                        </DockPanel>
+                        <TextBlock Style="{StaticResource Hint}" Margin="2,6,0,0"
+                                   Text="/tasi: gerekirse klasörü merkeze taşımaya izin verir · /kayitsiz: registry adımını atlar · sonuç MetroKafeMklink.log dosyasına yazılır"/>
+
+                        <TextBlock Text="Yapılandırma dosyası" Style="{StaticResource FieldLabel}" Margin="0,18,0,6"/>
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Margin="8,0,0,0" Click="OpenConfig_Click" ToolTip="Klasörü aç">
+                                <TextBlock Text="&#xE8A7;" FontFamily="{StaticResource IconFont}"/>
+                            </Button>
+                            <TextBox x:Name="ConfigBox" IsReadOnly="True" FontFamily="Consolas"/>
+                        </DockPanel>
+                        <TextBlock Style="{StaticResource Hint}" Margin="2,6,0,0"
+                                   Text="Bütün bağlantı ve registry kayıtları exe'nin yanındaki bu dosyada tutulur. Exe ile birlikte client'lara kopyalanınca aynı liste orada da çıkar."/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>
