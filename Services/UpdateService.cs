@@ -42,9 +42,11 @@ public static class UpdateService
 
         using var res = await Http.SendAsync(req, ct);
         if (res.StatusCode == HttpStatusCode.NotFound)
-            throw new InvalidOperationException("Sürüm bulunamadı. Depo gizli olduğu için Ayarlar'a GitHub token girilmeli; depoda henüz yayın da olmayabilir.");
+            throw new InvalidOperationException("Sürüm bulunamadı. Ayarlar'daki depo adını kontrol edin; depoda henüz yayın olmayabilir ya da depo gizliyse token gerekir.");
         if (res.StatusCode == HttpStatusCode.Unauthorized)
-            throw new InvalidOperationException("GitHub token geçersiz ya da süresi dolmuş.");
+            throw new InvalidOperationException("GitHub token geçersiz ya da süresi dolmuş. Açık depo için Ayarlar'dan token'ı silebilirsiniz.");
+        if (res.StatusCode == HttpStatusCode.Forbidden)
+            throw new InvalidOperationException("GitHub istek sınırına takıldı. Biraz sonra tekrar deneyin ya da Ayarlar'a token girin.");
         if (!res.IsSuccessStatusCode)
             throw new InvalidOperationException($"GitHub yanıtı: {(int)res.StatusCode} {res.ReasonPhrase}");
 

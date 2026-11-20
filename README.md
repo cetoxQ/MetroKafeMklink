@@ -54,8 +54,9 @@ Sonuç `MetroKafeMklink.log` dosyasına yazılır. Çıkış kodu `0` sorunsuz, 
 
 ## Güncelleme
 
-Depo gizli olduğu için Ayarlar'a bir GitHub token girilmelidir (yalnızca bu depoya, *Contents: Read-only* izinli
-fine-grained token önerilir). Token bilgisayara özel (DPAPI) şifrelenerek saklanır.
+Güncellemeler bu deponun Releases bölümünden alınır. Depo herkese açık olduğu için token gerekmez.
+Gizli bir depo kullanılacaksa ya da GitHub istek sınırına takılınırsa Ayarlar'a *Contents: Read-only* izinli
+fine-grained bir token girilebilir. Token bilgisayara özel (DPAPI) şifrelenerek saklanır.
 
 Yeni sürüm yayınlamak:
 

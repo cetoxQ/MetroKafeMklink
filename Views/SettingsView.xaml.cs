@@ -35,7 +35,7 @@ public partial class SettingsView : UserControl, IPage
     private void UpdateTokenInfo()
     {
         var hasToken = Secret.Unprotect(AppState.Config.Settings.EncryptedToken).Length > 0;
-        TokenInfo.Text = hasToken ? "✓ Kayıtlı token var. Değiştirmek için yenisini yazın." : "Kayıtlı token yok.";
+        TokenInfo.Text = hasToken ? "✓ Kayıtlı token var. Değiştirmek için yenisini yazın." : "Token yok; açık depo için gerekmez.";
         TokenInfo.Foreground = (System.Windows.Media.Brush)FindResource(hasToken ? "SuccessBrush" : "FaintTextBrush");
         ClearTokenButton.Visibility = hasToken ? Visibility.Visible : Visibility.Collapsed;
     }

@@ -69,7 +69,7 @@
                             <TextBlock Text="Güncelleme kaynağı (GitHub)" Style="{StaticResource SectionTitle}"/>
                         </StackPanel>
                         <TextBlock Style="{StaticResource Hint}" Margin="0,6,0,14"
-                                   Text="Depo gizli olduğu için güncellemeleri görebilmek adına bir GitHub token gerekir. Yalnızca 'Contents: Read-only' izinli, bu depoya özel bir fine-grained token önerilir. Token bu bilgisayara özel şifrelenerek saklanır."/>
+                                   Text="Güncellemeler bu depodaki yayınlardan (Releases) alınır. Depo herkese açık olduğu için token gerekmez. Token yalnızca gizli bir depo kullanılacaksa ya da GitHub istek sınırına takılırsanız gerekir; bu durumda 'Contents: Read-only' izinli fine-grained token önerilir. Token bu bilgisayara özel şifrelenerek saklanır."/>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
@@ -81,7 +81,7 @@
                                 <TextBox x:Name="RepoBox" Tag="cetoxQ/MetroKafeMklink" FontFamily="Consolas"/>
                             </StackPanel>
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="Token" Style="{StaticResource FieldLabel}"/>
+                                <TextBlock Text="Token (isteğe bağlı)" Style="{StaticResource FieldLabel}"/>
                                 <DockPanel>
                                     <Button x:Name="ClearTokenButton" DockPanel.Dock="Right" Margin="8,0,0,0" Style="{StaticResource GhostButton}"
                                             Click="ClearToken_Click" ToolTip="Kayıtlı token'ı sil">
