@@ -20,6 +20,7 @@ public partial class SettingsView : UserControl, IPage
     {
         var s = AppState.Config.Settings;
         CenterBox.Text = s.CenterPath;
+        CenterBox_TextChanged(CenterBox, null!);
         ProcessesBox.Text = s.CloseProcesses;
         RepoBox.Text = s.GitHubRepo;
         CheckUpdatesBox.IsChecked = s.CheckUpdatesOnStart;
@@ -41,28 +42,39 @@ public partial class SettingsView : UserControl, IPage
 
     private void CenterBox_TextChanged(object sender, TextChangedEventArgs e)
     {
-        var p = Environment.ExpandEnvironmentVariables(CenterBox.Text.Trim());
-        if (p.Length == 0) { CenterInfo.Text = ""; return; }
-        if (p.StartsWith(@"\\")) { CenterInfo.Text = "⚠ Ağ yolu junction ile kullanılamaz."; return; }
+        var raw = CenterBox.Text.Trim();
+        if (raw.StartsWith(@"\\")) { CenterInfo.Text = "⚠ Ağ yolu junction ile kullanılamaz."; return; }
+        string p;
+        try { p = AppState.ResolveCenter(raw); }
+        catch { CenterInfo.Text = "⚠ Geçersiz yol."; return; }
         var root = Path.GetPathRoot(p);
-        if (string.IsNullOrEmpty(root) || !Directory.Exists(root)) { CenterInfo.Text = "⚠ Sürücü bulunamadı."; return; }
+        if (string.IsNullOrEmpty(root) || !Directory.Exists(root)) { CenterInfo.Text = "⚠ Sürücü bulunamadı: " + p; return; }
         try
         {
             var drive = new DriveInfo(root);
             var exists = Directory.Exists(p) ? "klasör var" : "klasör ilk işlemde oluşturulacak";
-            CenterInfo.Text = $"{drive.Name} · {drive.AvailableFreeSpace / 1073741824.0:N0} GB boş · {exists}";
+            var source = raw.Length == 0 ? "varsayılan: exe'nin klasörü · " : "";
+            CenterInfo.Text = $"= {p}\n{source}{drive.Name} · {drive.AvailableFreeSpace / 1073741824.0:N0} GB boş · {exists}";
         }
-        catch { CenterInfo.Text = ""; }
+        catch { CenterInfo.Text = "= " + p; }
     }
 
     private void BrowseCenter_Click(object sender, RoutedEventArgs e)
     {
         var dlg = new OpenFolderDialog { Title = "Merkez klasörü seç" };
-        if (Directory.Exists(CenterBox.Text)) dlg.InitialDirectory = CenterBox.Text;
-        if (dlg.ShowDialog() == true) CenterBox.Text = dlg.FolderName;
+        var current = AppState.ResolveCenter(CenterBox.Text);
+        if (Directory.Exists(current)) dlg.InitialDirectory = current;
+        if (dlg.ShowDialog() != true) return;
+
+        // Exe klasorunun icindeyse goreli yaz ki exe ile birlikte tasinabilsin
+        var picked = dlg.FolderName.TrimEnd('\\');
+        var exe = AppState.ExeFolder;
+        if (picked.Equals(exe, StringComparison.OrdinalIgnoreCase)) CenterBox.Text = "";
+        else if (picked.StartsWith(exe + "\\", StringComparison.OrdinalIgnoreCase)) CenterBox.Text = "." + picked[exe.Length..];
+        else CenterBox.Text = picked;
     }
 
-    private void OpenCenter_Click(object sender, RoutedEventArgs e) => ProcessRunner.OpenInExplorer(CenterBox.Text.Trim());
+    private void OpenCenter_Click(object sender, RoutedEventArgs e) => ProcessRunner.OpenInExplorer(AppState.ResolveCenter(CenterBox.Text));
 
     private void OpenConfig_Click(object sender, RoutedEventArgs e) => ProcessRunner.OpenInExplorer(AppState.ConfigPath);
 
@@ -82,10 +94,16 @@ public partial class SettingsView : UserControl, IPage
 
     private async void Save_Click(object sender, RoutedEventArgs e)
     {
-        var center = CenterBox.Text.Trim().TrimEnd('\\');
-        if (center.StartsWith(@"\\") || !Path.IsPathFullyQualified(Environment.ExpandEnvironmentVariables(center)))
+        var center = CenterBox.Text.Trim();
+        if (center is @".\" or ".") center = "";
+        else if (center.Length > 3) center = center.TrimEnd('\\');
+        string resolved;
+        try { resolved = AppState.ResolveCenter(center); }
+        catch { resolved = ""; }
+        if (center.StartsWith(@"\\") || resolved.Length == 0 || !Directory.Exists(Path.GetPathRoot(resolved)))
         {
-            await MainWindow.Instance.InfoAsync("Kaydedilemedi", "Merkez klasör yerel bir diskte tam bir yol olmalı (örn. D:\\MetroKafeMerkez).");
+            await MainWindow.Instance.InfoAsync("Kaydedilemedi",
+                "Merkez klasör yerel bir diskte olmalı. Boş bırakırsanız exe'nin bulunduğu klasör kullanılır; .\\Merkez gibi göreli ya da D:\\Merkez gibi tam yol da yazabilirsiniz.");
             return;
         }
         var repo = RepoBox.Text.Trim().Trim('/');
@@ -96,7 +114,7 @@ public partial class SettingsView : UserControl, IPage
         }
 
         var s = AppState.Config.Settings;
-        var centerChanged = !string.Equals(s.CenterPath.TrimEnd('\\'), center, StringComparison.OrdinalIgnoreCase);
+        var centerChanged = !string.Equals(AppState.CenterPath, resolved, StringComparison.OrdinalIgnoreCase);
         s.CenterPath = center;
         s.CloseProcesses = ProcessesBox.Text.Trim();
         s.GitHubRepo = repo;

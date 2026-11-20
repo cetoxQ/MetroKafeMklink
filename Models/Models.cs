@@ -111,7 +111,8 @@ public class RegEntry : Observable
 
 public class AppSettings
 {
-    public string CenterPath { get; set; } = Directory.Exists(@"D:\") ? @"D:\MetroKafeMerkez" : @"C:\MetroKafeMerkez";
+    /// <summary>Bos ya da goreli (.\Merkez gibi) ise exe'nin bulundugu klasore gore cozulur.</summary>
+    public string CenterPath { get; set; } = "";
     public string CloseProcesses { get; set; } =
         "RiotClientServices, RiotClientUx, RiotClientUxRender, RiotClientCrashHandler, LeagueClient, LeagueClientUx, LeagueClientUxRender, EpicGamesLauncher";
     public bool CheckUpdatesOnStart { get; set; } = true;

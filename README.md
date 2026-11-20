@@ -28,6 +28,9 @@ Uygulamadan önce yapılacaklar listelenir ve onay istenir. "Bağlantıyı kald�
 
 ## Yollar ve değişkenler
 
+Merkez klasör varsayılan olarak boştur ve boşken **exe'nin bulunduğu klasör** (`.\`) kullanılır.
+`.\Merkez` gibi göreli bir yol da exe'nin klasörüne göre çözülür; istenirse `D:\Merkez` gibi tam yol da yazılabilir.
+
 Yollarda `{MERKEZ}` (Ayarlar'daki merkez klasör) ve `%APPDATA%`, `%LOCALAPPDATA%`, `%PROGRAMDATA%`, `%USERPROFILE%`
 kullanılabilir. Böylece aynı kayıt her bilgisayarda ve her Windows kullanıcısında doğru yeri gösterir.
 Junction yalnızca yerel bir diski gösterebilir; ağ yolu (`\\sunucu\...`) kullanılamaz.

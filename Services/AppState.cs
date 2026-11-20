@@ -77,7 +77,18 @@ public static class AppState
         catch { /* kayit dosyasi yazilamazsa arayuzdeki kayit yeterli */ }
     }
 
-    public static string CenterPath => Config.Settings.CenterPath.Trim().TrimEnd('\\');
+    public static string ExeFolder => AppContext.BaseDirectory.TrimEnd('\\');
+
+    public static string CenterPath => ResolveCenter(Config.Settings.CenterPath);
+
+    /// <summary>Bos deger exe klasoru, goreli deger exe klasorune gore, tam yol oldugu gibi.</summary>
+    public static string ResolveCenter(string? value)
+    {
+        var p = Environment.ExpandEnvironmentVariables((value ?? "").Trim());
+        if (p.Length == 0) return ExeFolder;
+        if (!Path.IsPathFullyQualified(p)) p = Path.GetFullPath(Path.Combine(ExeFolder, p));
+        return p.TrimEnd('\\');
+    }
 
     /// <summary>{MERKEZ} ve %DEGISKEN% ifadelerini gercek yola cevirir.</summary>
     public static string Expand(string? path)

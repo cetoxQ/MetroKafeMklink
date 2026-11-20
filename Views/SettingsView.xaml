@@ -30,7 +30,7 @@
                             <TextBlock Text="Merkez klasör" Style="{StaticResource SectionTitle}"/>
                         </StackPanel>
                         <TextBlock Style="{StaticResource Hint}" Margin="0,6,0,14"
-                                   Text="Bütün verilerin toplandığı yer. Kayıtlardaki {MERKEZ} bu yolu gösterir. Junction yalnızca yerel bir diski gösterebilir; ağ yolu (\\sunucu\…) kullanılamaz."/>
+                                   Text="Bütün verilerin toplandığı yer. Kayıtlardaki {MERKEZ} bu yolu gösterir. Boş bırakılırsa exe'nin bulunduğu klasör (.\) kullanılır; .\Merkez gibi göreli yollar da exe'nin klasörüne göre çözülür. Junction yalnızca yerel bir diski gösterebilir; ağ yolu (\\sunucu\…) kullanılamaz."/>
                         <DockPanel>
                             <Button DockPanel.Dock="Right" Margin="8,0,0,0" Click="OpenCenter_Click" ToolTip="Gezgin'de aç">
                                 <TextBlock Text="&#xE8A7;" FontFamily="{StaticResource IconFont}"/>
@@ -41,7 +41,7 @@
                                     <TextBlock Text="Seç"/>
                                 </StackPanel>
                             </Button>
-                            <TextBox x:Name="CenterBox" Tag="örn. D:\MetroKafeMerkez" TextChanged="CenterBox_TextChanged"/>
+                            <TextBox x:Name="CenterBox" Tag=".\  (exe'nin bulunduğu klasör)" TextChanged="CenterBox_TextChanged"/>
                         </DockPanel>
                         <TextBlock x:Name="CenterInfo" Style="{StaticResource Hint}" Margin="2,6,0,0"/>
                     </StackPanel>
